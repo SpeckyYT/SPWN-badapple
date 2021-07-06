@@ -3,14 +3,15 @@ canvas = import '../canvas/canvas.spwn'
 
 screen = ?g
 
-let WIDTH = 35
+let WIDTH = 36
 let HEIGHT = 28
+let FWIDTH = WIDTH + 2
 let PIXELSIZE = 10/HEIGHT
-let SLICEH = 0
+let SLICEH = 1
 let PIXELS = WIDTH * HEIGHT
 
-let STARTFROM = 0           // the frame it should start the animation form
-let MAXGENFRAMES = 10000    // maximal amount of frames to draw
+let STARTFROM = 0       // the frame it should start the animation form
+let MAXGENFRAMES = -1   // maximal amount of frames to draw
 
 let badCanvas = canvas::new(
     0, 0,
@@ -28,25 +29,29 @@ for x in ..WIDTH {
     previousFrame.push(array)
 }
 
-let DELTATIME = 1/1 // 1/20
+let DELTATIME = 1/20    // 20 fps
 
 // https://raw.githubusercontent.com/kevinjycui/bad-apple/master/april-fools/input.txt
-let file = $.readfile("input.txt")
-let lines = file.split("\r\n")
-if lines[lines.length-1].length == 0 {lines.pop()}
+let file = @file::new('input.txt')
 
 let times = 0
 
-for _ in ..999999 {
-    if lines.length <= 0 {break}
-    if times >= MAXGENFRAMES {break}
+for index in ..999999 {
+    if MAXGENFRAMES >= 0 && times >= MAXGENFRAMES {break}
 
-    $.print(lines.length, ' lines left')
+    $.print(index, ' frames done')
 
     let currentFrame = []
     for _ in 0..100 {
         if currentFrame.length >= HEIGHT {break}
-        currentFrame.push(lines.remove(HEIGHT*STARTFROM))
+
+        let seekIndex =
+            STARTFROM * FWIDTH * HEIGHT +   // BASE INDEX
+            times * FWIDTH * HEIGHT +       // FRAME INDEX
+            currentFrame.length * FWIDTH    // LINE INDEX
+
+        file.seek(seekIndex)
+        currentFrame.push(file.read(WIDTH))
     }
     if currentFrame.length >= HEIGHT {
         call_with_delay(times*DELTATIME, !{
