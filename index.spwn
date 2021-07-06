@@ -1,0 +1,86 @@
+// https://github.com/SpeckyYT/SPWN-canvas
+canvas = import '../canvas/canvas.spwn'
+
+screen = ?g
+
+let WIDTH = 35
+let HEIGHT = 28
+let PIXELSIZE = 10/HEIGHT
+let SLICEH = 0
+let PIXELS = WIDTH * HEIGHT
+
+let STARTFROM = 0           // the frame it should start the animation form
+let MAXGENFRAMES = 10000    // maximal amount of frames to draw
+
+let badCanvas = canvas::new(
+    0, 0,
+    WIDTH, HEIGHT-SLICEH,
+    10/(HEIGHT-SLICEH),
+    screen
+)
+
+let previousFrame = []
+for x in ..WIDTH {
+    let array = []
+    for y in ..HEIGHT {
+        array.push('')
+    }
+    previousFrame.push(array)
+}
+
+let DELTATIME = 1/1 // 1/20
+
+// https://raw.githubusercontent.com/kevinjycui/bad-apple/master/april-fools/input.txt
+let file = $.readfile("input.txt")
+let lines = file.split("\r\n")
+if lines[lines.length-1].length == 0 {lines.pop()}
+
+let times = 0
+
+for _ in ..999999 {
+    if lines.length <= 0 {break}
+    if times >= MAXGENFRAMES {break}
+
+    $.print(lines.length, ' lines left')
+
+    let currentFrame = []
+    for _ in 0..100 {
+        if currentFrame.length >= HEIGHT {break}
+        currentFrame.push(lines.remove(HEIGHT*STARTFROM))
+    }
+    if currentFrame.length >= HEIGHT {
+        call_with_delay(times*DELTATIME, !{
+            for i in 0..PIXELS {
+                if i / HEIGHT >= HEIGHT {break}
+
+                let y = HEIGHT - $.floor(i / HEIGHT)
+                let x = i % WIDTH
+
+                if x >= badCanvas.colors.length {continue}
+                if y >= badCanvas.colors[x].length {continue}
+
+                let char = currentFrame[y][x]
+
+                if char == previousFrame[x][y] {continue}
+
+                // let previousFrame[x][y] = char
+
+                let mirroredY = badCanvas.colors[x].length-(y+1)
+
+                if char == '1' {
+                    badCanvas.colors[x][mirroredY].set(255,255,255)
+                    continue
+                }
+                if char == '0' {
+                    badCanvas.colors[x][mirroredY].set(0,0,0)
+                    continue
+                }
+            }
+        })
+    }
+    times++
+}
+
+hide_player()
+screen.move(15,0,1)
+screen.lock_to_player(true,false)
