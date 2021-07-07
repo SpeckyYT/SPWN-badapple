@@ -20,14 +20,7 @@ let badCanvas = canvas::new(
     screen
 )
 
-let previousFrame = []
-for x in ..WIDTH {
-    let array = []
-    for y in ..HEIGHT {
-        array.push('')
-    }
-    previousFrame.push(array)
-}
+let previousFrame = {}
 
 let DELTATIME = 1/20    // 20 fps
 
@@ -66,9 +59,11 @@ for index in ..999999 {
 
                 let char = currentFrame[y][x]
 
-                if char == previousFrame[x][y] {continue}
-
-                // let previousFrame[x][y] = char
+                let key = x as @string + '-' + y as @string
+                if previousFrame has key {
+                    if char == previousFrame.get(key) {continue}
+                }
+                previousFrame.set(key,char)
 
                 let mirroredY = badCanvas.colors[x].length-(y+1)
 
