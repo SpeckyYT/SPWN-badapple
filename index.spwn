@@ -5,7 +5,7 @@ screen = ?g
 
 let WIDTH = 36
 let HEIGHT = 28
-let FWIDTH = WIDTH + 2
+let FWIDTH = WIDTH + 2  // 1: \n | 2: \r\n
 let PIXELSIZE = 10/HEIGHT
 let SLICEH = 1
 let PIXELS = WIDTH * HEIGHT
