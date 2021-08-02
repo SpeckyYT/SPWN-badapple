@@ -29,7 +29,7 @@ let file = @file::new('input.txt')
 
 let times = 0
 
-for index in ..999999 {
+for index in ..(1/0) {
     if MAXGENFRAMES >= 0 && times >= MAXGENFRAMES {break}
 
     $.print(index, ' frames done')
@@ -47,36 +47,31 @@ for index in ..999999 {
         currentFrame.push(file.read(WIDTH))
     }
     if currentFrame.length >= HEIGHT {
-        call_with_delay(times*DELTATIME, !{
-            for i in 0..PIXELS {
-                if i / HEIGHT >= HEIGHT {break}
+        for i in 0..PIXELS {
+            if i / HEIGHT >= HEIGHT {break}
 
-                let y = HEIGHT - $.floor(i / HEIGHT)
-                let x = i % WIDTH
+            let y = HEIGHT - $.floor(i / HEIGHT)
+            let x = i % WIDTH
 
-                if x >= badCanvas.colors.length {continue}
-                if y >= badCanvas.colors[x].length {continue}
+            if x >= badCanvas.colors.length {continue}
+            if y >= badCanvas.colors[x].length {continue}
 
-                let char = currentFrame[y][x]
+            let char = currentFrame[y][x]
 
-                let key = x as @string + '-' + y as @string
-                if previousFrame has key {
-                    if char == previousFrame.get(key) {continue}
-                }
-                previousFrame.set(key,char)
-
-                let mirroredY = badCanvas.colors[x].length-(y+1)
-
-                if char == '1' {
-                    badCanvas.colors[x][mirroredY].set(255,255,255)
-                    continue
-                }
-                if char == '0' {
-                    badCanvas.colors[x][mirroredY].set(0,0,0)
-                    continue
-                }
+            let key = x as @string + '-' + y as @string
+            if previousFrame has key {
+                if char == previousFrame.get(key) {continue}
             }
-        })
+            previousFrame.set(key,char)
+
+            let mirroredY = badCanvas.colors[x].length-(y+1)
+
+            let color = 255 if char == '1' else 0
+
+            call_with_delay(times*DELTATIME, !{
+                badCanvas.colors[x][mirroredY].set(color,color,color)
+            })
+        }
     }
     times++
 }
