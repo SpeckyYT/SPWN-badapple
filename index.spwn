@@ -28,20 +28,18 @@ let DELTATIME = 1/20    // 20 fps
 // https://raw.githubusercontent.com/kevinjycui/bad-apple/master/april-fools/input.txt
 let file = @file::new('input.txt')
 
-let times = 0
-
 for index in ..(1/0) {
-    if MAXGENFRAMES >= 0 && times >= MAXGENFRAMES {break}
+    if MAXGENFRAMES >= 0 && index >= MAXGENFRAMES {break}
 
     $.print(index, ' frames done')
 
     let currentFrame = []
-    for _ in 0..100 {
+    for _ in ..(1/0) {
         if currentFrame.length >= HEIGHT {break}
 
         let seekIndex =
             STARTFROM * FWIDTH * HEIGHT +   // BASE INDEX
-            times * FWIDTH * HEIGHT +       // FRAME INDEX
+            index * FWIDTH * HEIGHT +       // FRAME INDEX
             currentFrame.length * FWIDTH    // LINE INDEX
 
         file.seek(seekIndex)
@@ -74,7 +72,6 @@ for index in ..(1/0) {
             })
         }
     }
-    times++
 }
 
 hide_player()
