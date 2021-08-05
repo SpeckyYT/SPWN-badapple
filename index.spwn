@@ -12,6 +12,7 @@ let PIXELS = WIDTH * HEIGHT
 
 let STARTFROM = 0       // the frame it should start the animation form
 let MAXGENFRAMES = -1   // maximal amount of frames to draw
+let DELAY = 0           // the time it waits to start playing
 
 let badCanvas = canvas::new(
     0, 0,
@@ -68,7 +69,7 @@ for index in ..(1/0) {
 
             let color = 255 if char == '1' else 0
 
-            call_with_delay(times*DELTATIME, !{
+            call_with_delay(index * DELTATIME + DELAY, !{
                 badCanvas.colors[x][mirroredY].set(color,color,color)
             })
         }
