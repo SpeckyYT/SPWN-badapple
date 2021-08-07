@@ -46,10 +46,10 @@ for index in ..(1/0) {
         currentFrame.push(file.read(WIDTH))
     }
     if currentFrame.length >= HEIGHT {
-        for i in 0..PIXELS {
-            if i / HEIGHT >= HEIGHT {break}
+        for i in (WIDTH*SLICEH)..PIXELS {
+            if i / WIDTH > HEIGHT + SLICEH {break}
 
-            let y = HEIGHT - $.floor(i / HEIGHT)
+            let y = HEIGHT - $.floor(i / WIDTH) - 1
             let x = i % WIDTH
 
             if x >= badCanvas.colors.length {continue}
