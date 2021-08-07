@@ -65,7 +65,11 @@ for index in ..(1/0) {
 
             let mirroredY = badCanvas.colors[x].length-(y+1)
 
-            let color = 255 if char == '1' else 0
+            let color = switch char {
+                case '0': 0
+                case '1': 255
+                else: 128
+            }
 
             call_with_delay(index * DELTATIME + DELAY, !{
                 badCanvas.colors[x][mirroredY].set(color,color,color)
