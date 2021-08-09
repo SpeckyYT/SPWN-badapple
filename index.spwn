@@ -1,5 +1,9 @@
+extract obj_props
+
 // https://github.com/SpeckyYT/SPWN-canvas
 canvas = import '../canvas/canvas.spwn'
+// https://github.com/SpeckyYT/SPWN-speed
+speed = import '../speed/speed.spwn'
 
 screen = ?g
 
@@ -9,11 +13,15 @@ let FWIDTH = WIDTH + 2  // 1: \n | 2: \r\n
 let PIXELSIZE = 10/HEIGHT
 let SLICEH = 1
 let PIXELS = WIDTH * HEIGHT
+let SPEED = speed(1)
 
 let STARTFROM = 0       // the frame it should start the animation form
 let MAXGENFRAMES = -1   // maximal amount of frames to draw
-let DELAY = 0           // the time it waits to start playing
+let STARTDELAY = 2      // the time it waits to start playing
+let ENDDELAY = 5        // the time it waits to stop playing 
 let DELTATIME = 1/20    // 20 fps
+let USEGROUPS = false   // if false, it puts the colors on the x positions and doesn't use groups
+let TIMEFIX = 977/1000  // this fixes the timing when not using groups
 
 let badCanvas = canvas::new(
     0, 0,
@@ -24,11 +32,11 @@ let badCanvas = canvas::new(
 
 let previousFrame = []
 for _ in ..PIXELS {
-    previousFrame.push(0/0)
+    previousFrame.push('0') // GD's colors default to white
 }
 
 // https://raw.githubusercontent.com/kevinjycui/bad-apple/master/april-fools/input.txt
-let file = @file::new('input.txt')
+let file = @file::new('E:/Roba Specky/SPWN/badapple/input.txt')
 
 for index in ..(1/0) {
     if MAXGENFRAMES >= 0 && index >= MAXGENFRAMES {break}
@@ -45,7 +53,9 @@ for index in ..(1/0) {
             currentFrame.length * FWIDTH    // LINE INDEX
 
         file.seek(seekIndex)
-        currentFrame.push(file.read(WIDTH))
+        let line = file.read(WIDTH)
+        if line.length < WIDTH {break}
+        currentFrame.push(line)
     }
     if currentFrame.length >= HEIGHT {
         let toPush = []
@@ -67,8 +77,8 @@ for index in ..(1/0) {
             let mirroredY = badCanvas.colors[x].length-(y+1)
 
             let color = switch char {
-                case '0': 0
-                case '1': 255
+                case '0': 255
+                case '1': 0
                 else: 128
             }
 
@@ -77,16 +87,46 @@ for index in ..(1/0) {
                 color,
             ])
         }
-        call_with_delay(index * DELTATIME + DELAY, !{
-            for push in toPush {
-                colorG = push[0]
-                color = push[1]
-                colorG.set(color,color,color)
+        if toPush.length == 0 {continue}
+        if USEGROUPS {
+            call_with_delay(index * DELTATIME + STARTDELAY, !{
+                for push in toPush {
+                    colorG = push[0]
+                    color = push[1]
+                    colorG.set(color,color,color)
+                }
+            })
+        } else {
+            for i in ..toPush.length {
+                colorG = toPush[i][0]
+                color = toPush[i][1]
+                $.add(obj{
+                    OBJ_ID: 899,
+                    X:  (index * DELTATIME + STARTDELAY) * (30 * SPEED) * TIMEFIX,
+                    Y: 30*i,
+                    DURATION: 0,
+                    TRIGGER_RED: color,
+                    TRIGGER_GREEN: color,
+                    TRIGGER_BLUE: color,
+                    TARGET_COLOR: colorG,
+                })
             }
+        }
+    } else {
+        $.add(obj{
+            OBJ_ID: 1,
+            X:  (index * DELTATIME + STARTDELAY + ENDDELAY) * (30 * SPEED) * TIMEFIX,
+            Y: -30,
         })
+        break
     }
 }
 
 hide_player()
-screen.move(15,0,1)
 screen.lock_to_player(true,false)
+toggle_bg_effect(false)
+-> screen.move(-45,0,1)
+
+for color in [BG,GROUND,LINE] {
+    color.set(0,0,0)
+}
