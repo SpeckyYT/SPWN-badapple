@@ -36,7 +36,7 @@ for _ in ..PIXELS {
 }
 
 // https://raw.githubusercontent.com/kevinjycui/bad-apple/master/april-fools/input.txt
-let file = @file::new('E:/Roba Specky/SPWN/badapple/input.txt')
+let file = $.readfile('input.txt')
 
 for index in ..(1/0) {
     if MAXGENFRAMES >= 0 && index >= MAXGENFRAMES {break}
@@ -52,8 +52,7 @@ for index in ..(1/0) {
             index * FWIDTH * HEIGHT +       // FRAME INDEX
             currentFrame.length * FWIDTH    // LINE INDEX
 
-        file.seek(seekIndex)
-        let line = file.read(WIDTH)
+        let line = file.substr(seekIndex,seekIndex+WIDTH)
         if line.length < WIDTH {break}
         currentFrame.push(line)
     }
