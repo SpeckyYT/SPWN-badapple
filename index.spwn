@@ -18,7 +18,6 @@ let SPEED = speed(1)
 let STARTFROM = 0       // the frame it should start the animation form
 let MAXGENFRAMES = -1   // maximal amount of frames to draw
 let STARTDELAY = 2      // the time it waits to start playing
-let ENDDELAY = 5        // the time it waits to stop playing 
 let ENDDELAY = 3        // the time it waits to stop playing 
 let DELTATIME = 1/20    // 20 fps
 let USEGROUPS = false   // if false, it puts the colors on the x positions and doesn't use groups
