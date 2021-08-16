@@ -21,7 +21,6 @@ let STARTDELAY = 2      // the time it waits to start playing
 let ENDDELAY = 5        // the time it waits to stop playing 
 let DELTATIME = 1/20    // 20 fps
 let USEGROUPS = false   // if false, it puts the colors on the x positions and doesn't use groups
-let TIMEFIX = 977/1000  // this fixes the timing when not using groups
 
 let badCanvas = canvas::new(
     0, 0,
@@ -102,7 +101,7 @@ for index in ..(1/0) {
                 color = toPush[i][1]
                 $.add(obj{
                     OBJ_ID: 899,
-                    X:  (index * DELTATIME + STARTDELAY) * (30 * SPEED) * TIMEFIX,
+                    X:  (index * DELTATIME + STARTDELAY) * (30 * SPEED),
                     Y: 30*i,
                     DURATION: 0,
                     TRIGGER_RED: color,
@@ -115,7 +114,7 @@ for index in ..(1/0) {
     } else {
         $.add(obj{
             OBJ_ID: 1,
-            X:  (index * DELTATIME + STARTDELAY + ENDDELAY) * (30 * SPEED) * TIMEFIX,
+            X:  (index * DELTATIME + STARTDELAY + ENDDELAY) * (30 * SPEED),
             Y: -30,
         })
         break
